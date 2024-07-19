@@ -1,0 +1,22 @@
+{
+    "services": [
+        {
+            "id": 1,
+            "stripe_secret_key": "",
+            "stripe_publishable_key": "",
+            "name": "Quick Delivery",
+            "description": "Disc",
+            "kind": "one-time-purchase",
+            "service_category": "virtual",
+            "location": null,
+            "price": "14",
+            "subscription_price": "",
+            "repeat_cycle": null,
+            "email": "leo.lyy@hotmail.com",
+            "provider": "Nobo",
+            "price_id": "price_1PbtKy04RXCS71J7CUUn8mlG",
+            "image_url": "https://via.placeholder.com/150",
+            "date": "2024-07-14"
+        }
+    ]
+}
