@@ -1,6 +1,7 @@
 from app import create_app, session
 from app.models import User
 from flask import redirect
+import os
 
 app = create_app()
 
