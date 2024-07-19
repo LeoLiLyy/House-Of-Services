@@ -1,0 +1,61 @@
+{% extends 'html/core/base.html' %}
+
+{% block content %}
+    <a class="home" href="/">&#8592 Home</a>
+    <h1 class="title">{% block title %} Profile {% endblock %}</h1>
+    <h2> Welcome <span id="userName"></span> 👋</h2>
+    <p class="email" id="userEmail"></p>
+    <h2>Secret Message:</h2>
+    <p class="secret" id="secretMsg"></p>
+    <button class="link logout" onclick="logout()">Logout</button>
+
+    <script src="{{ url_for('static', filename='descope.js') }}"></script>
+    <script>
+        // Check if the session token exists
+        const sessionToken = localStorage.getItem('sessionToken');
+
+        // Function to get profile data
+        function getProfileData() {
+            fetch('/auth/get_secret_message', { // call the API endpoint from the Flask server
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: 'Bearer ' + sessionToken,
+                }
+            }).then(response => {
+                if (response.status === 401) { // Unauthorized
+                    window.location.href = '/auth/hopp';
+                }
+                return response.json();
+            }).then(jsonData => {
+                console.log(jsonData);
+                secretMsg.innerHTML = jsonData.secret_msg;
+            }).catch(err => {
+                console.log(err); // error
+                alert("An error occurred");
+                window.location.href = '/auth/hopp';
+            });
+        }
+
+        // Function to set user name and email
+        async function setNameEmail() {
+            const profile = await sdk.me();
+            userName.innerHTML = profile.data.name;
+            userEmail.innerHTML = profile.data.email;
+        }
+
+        // Check session token and get profile data if it exists
+        if (sessionToken) {
+            getProfileData();
+            setNameEmail();
+        } else {
+            window.location.href = "/auth/hopp";
+        }
+
+        // Function to logout
+        async function logout() {
+            await sdk.logout();
+            localStorage.removeItem('sessionToken');
+            window.location.href = "/auth/hopp";
+        }
+    </script>
+{% endblock %}

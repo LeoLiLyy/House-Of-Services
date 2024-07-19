@@ -1,0 +1,80 @@
+{% extends "html/core/base.html" %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">Shopping Cart</h1>
+        {% if cart %}
+            <div class="table-container">
+                <table class="table is-fullwidth is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Provider</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart %}
+                        <tr>
+                            <td>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-64x64">
+                                            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <p class="title is-5">{{ item.name }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ item.provider }}</td>
+                            <td>{{ item.price or item.subscription_price }}</td>
+                            <td>
+                                <button class="button is-danger is-light" onclick="removeFromCart({{ item.id }})">Remove</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <button class="button is-primary" onclick="checkout()">Proceed to Checkout</button>
+                </div>
+            </div>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+    function removeFromCart(serviceId) {
+        fetch('/service/remove_from_cart/'.concat(serviceId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ service_id: serviceId }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                console.error('Error:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function checkout() {
+        window.location.replace("/auth/fin/checkout");
+    }
+</script>
+{% endblock %}

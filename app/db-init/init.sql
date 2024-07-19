@@ -1,0 +1,14 @@
+CREATE DATABASE homeofservices;
+
+USE homeofservices;
+
+CREATE TABLE User (
+    UserID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(20) NULL,
+    Email VARCHAR(30) UNIQUE NOT NULL,
+    Password VARCHAR(90) NOT NULL,
+    Account_Type VARCHAR(8) NOT NULL,
+    MFA BOOL NOT NULL,
+    PSK BOOL NOT NULL,
+    session_token VARCHAR(100) NULL
+);

@@ -1,0 +1,153 @@
+{% extends "html/core/base.html" %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h2 class="title is-3 has-text-centered">Create New Service</h2>
+        <div class="box">
+            <form method="POST" action="/service/add_new_service">
+                <div class="field">
+                    <label class="label" for="name">Service Name</label>
+                    <div class="control">
+                        <input class="input" type="text" id="name" name="name" placeholder="Enter service name" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="description">Description</label>
+                    <div class="control">
+                        <textarea class="textarea" id="description" name="description" rows="3" placeholder="Enter service description" required></textarea>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="type">Type</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="type" name="type" required onchange="toggleSubscriptionFields()">
+                                <option value="" disabled selected>Select type</option>
+                                <option value="one-time-purchase">One-Time Purchase</option>
+                                <option value="subscription">Subscription</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="service_category">Service Category</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="service_category" name="service_category" required onchange="toggleLocationInput()">
+                                <option value="" disabled selected>Select category</option>
+                                <option value="virtual">Virtual</option>
+                                <option value="physical">Physical</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field" id="location-field" style="display: none;">
+                    <label class="label" for="location">Location</label>
+                    <div class="control">
+                        <input class="input" type="text" id="location" name="location" placeholder="Enter merchant location">
+                    </div>
+                </div>
+                <div class="field" id="price-field">
+                    <label class="label" for="price">Price</label>
+                    <div class="control">
+                        <input class="input" type="number" id="price" name="price" placeholder="Enter service price" required>
+                    </div>
+                </div>
+                <div class="field" id="subscription-price-field" style="display: none;">
+                    <label class="label" for="subscription_price">Subscription Price</label>
+                    <div class="control">
+                        <input class="input" type="number" id="subscription_price" name="subscription_price" placeholder="Enter subscription price">
+                    </div>
+                </div>
+                <div class="field" id="repeat-cycle-field" style="display: none;">
+                    <label class="label" for="repeat_cycle">Repeat Cycle</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="repeat_cycle" name="repeat_cycle">
+                                <option value="" disabled selected>Select repeat cycle</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="stripe_secret_key">Stripe Secret Key</label>
+                    <div class="control">
+                        <input class="input" type="text" id="stripe_secret_key" name="stripe_secret_key" placeholder="Enter Stripe Secret Key">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="stripe_publishable_key">Stripe Publishable Key</label>
+                    <div class="control">
+                        <input class="input" type="text" id="stripe_publishable_key" name="stripe_publishable_key" placeholder="Enter Stripe Publishable Key">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="price_id">Price ID</label>
+                    <div class="control">
+                        <input class="input" type="text" id="price_id" name="price_id" placeholder="Enter Price ID">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="email">Contact Email</label>
+                    <div class="control">
+                        <input class="input" type="email" id="email" name="email" placeholder="Enter contact email" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="provider">Provider Name</label>
+                    <div class="control">
+                        <input class="input" type="text" id="provider" name="provider" placeholder="Enter provider name" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="image_url">Image URL</label>
+                    <div class="control">
+                        <input class="input" type="url" id="image_url" name="image_url" placeholder="Enter image URL">
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Create Service</button>
+                    </div>
+                    <div class="control">
+                        <button type="reset" class="button is-light">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    function toggleLocationInput() {
+        var serviceCategory = document.getElementById('service_category').value;
+        var locationField = document.getElementById('location-field');
+        if (serviceCategory === 'physical') {
+            locationField.style.display = 'block';
+        } else {
+            locationField.style.display = 'none';
+        }
+    }
+
+    function toggleSubscriptionFields() {
+        var type = document.getElementById('type').value;
+        var priceField = document.getElementById('price-field');
+        var subscriptionPriceField = document.getElementById('subscription-price-field');
+        var repeatCycleField = document.getElementById('repeat-cycle-field');
+
+        if (type === 'subscription') {
+            priceField.style.display = 'none';
+            subscriptionPriceField.style.display = 'block';
+            repeatCycleField.style.display = 'block';
+        } else {
+            priceField.style.display = 'block';
+            subscriptionPriceField.style.display = 'none';
+            repeatCycleField.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

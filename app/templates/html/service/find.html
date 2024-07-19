@@ -1,0 +1,100 @@
+{% extends "html/core/base.html" %}
+
+{% block content %}
+<script src="https://teamnull1.statuspage.io/embed/script.js"></script>
+<section class="section">
+    <div class="container">
+        <h1 class="title">{{ g.translations['Find a Service'] }}</h1>
+        <div class="field">
+            <div class="control has-icons-left">
+                <input class="input" type="text" placeholder="Search for services..." id="search">
+                <span class="icon is-left">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+        </div>
+        <div class="columns is-multiline">
+            {% for service in services %}
+            <div class="column is-one-third">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image is-4by3">
+                            <img src="{{ service.image_url }}" alt="Service image">
+                        </figure>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <p class="title is-4">{{ service.name }}</p>
+                                <p class="subtitle is-6">{{ service.provider }}</p>
+                            </div>
+                        </div>
+                        <div class="content">
+                            {{ service.description }}
+                            <br>
+                            <time datetime="{{ service.date }}">{{ service.date }}</time>
+                        </div>
+                    </div>
+                    <footer class="card-footer">
+                        <a href="{{ url_for('service.view', service_id=service.id) }}" class="card-footer-item button is-primary is-light">View Details</a>
+                        <button class="card-footer-item button is-primary is-light contact-provider-btn" data-email="{{ service.email }}" data-subject="Inquiry about {{ service.name }}">Contact</button>
+                    </footer>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Modal for Contact Provider -->
+<div class="modal" id="contactProviderModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Contact Provider</p>
+            <button class="delete" aria-label="close" id="closeModalBtn"></button>
+        </header>
+        <section class="modal-card-body">
+            <p>Would you like to contact the provider via Outlook?</p>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" id="redirectBtn">Yes, redirect me</button>
+            <button class="button" id="cancelBtn">Cancel</button>
+        </footer>
+    </div>
+</div>
+
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" defer></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const contactProviderBtns = document.querySelectorAll('.contact-provider-btn');
+        const contactProviderModal = document.getElementById('contactProviderModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const redirectBtn = document.getElementById('redirectBtn');
+        let selectedEmail = '';
+        let selectedSubject = '';
+
+        contactProviderBtns.forEach(button => {
+            button.addEventListener('click', () => {
+                selectedEmail = button.getAttribute('data-email');
+                selectedSubject = button.getAttribute('data-subject');
+                contactProviderModal.classList.add('is-active');
+            });
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            contactProviderModal.classList.remove('is-active');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            contactProviderModal.classList.remove('is-active');
+        });
+
+        redirectBtn.addEventListener('click', () => {
+            const body = encodeURIComponent("Hello,\n\nI am interested in learning more about this service.\n\nBest regards,\n[Your Name]");
+            window.location.href = `mailto:${selectedEmail}?subject=${encodeURIComponent(selectedSubject)}&body=${body}`;
+        });
+    });
+</script>
+{% endblock %}

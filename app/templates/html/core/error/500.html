@@ -1,0 +1,128 @@
+{% extends "html/core/base.html" %}
+
+{% block content %}
+<section class="section">
+    <div class="container has-text-centered">
+        <div class="glitch-container">
+            <h1 class="glitch-title" data-text="500">500</h1>
+            <h2 class="glitch-subtitle" data-text="Internal Server Error">Internal Server Error</h2>
+            <p><a href="/" class="button is-primary">Go back to Home Page</a></p>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Base styles */
+body {
+    background: #000;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.glitch-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.glitch-title, .glitch-subtitle {
+    position: relative;
+    font-size: 5rem;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.glitch-title::before, .glitch-title::after,
+.glitch-subtitle::before, .glitch-subtitle::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+}
+
+.glitch-title::before {
+    left: 2px;
+    text-shadow: -2px 0 red;
+    animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+.glitch-title::after {
+    left: -2px;
+    text-shadow: -2px 0 blue;
+    animation: glitch-anim2 2s infinite linear alternate-reverse;
+}
+
+.glitch-subtitle::before {
+    left: 2px;
+    text-shadow: -2px 0 red;
+    animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+.glitch-subtitle::after {
+    left: -2px;
+    text-shadow: -2px 0 blue;
+    animation: glitch-anim2 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% {
+        clip: rect(44px, 450px, 56px, 0);
+        transform: skew(0.5deg);
+    }
+    20% {
+        clip: rect(28px, 450px, 44px, 0);
+        transform: skew(0.5deg);
+    }
+    40% {
+        clip: rect(10px, 450px, 80px, 0);
+        transform: skew(0.5deg);
+    }
+    60% {
+        clip: rect(30px, 450px, 90px, 0);
+        transform: skew(0.5deg);
+    }
+    80% {
+        clip: rect(56px, 450px, 90px, 0);
+        transform: skew(0.5deg);
+    }
+    100% {
+        clip: rect(44px, 450px, 56px, 0);
+        transform: skew(0.5deg);
+    }
+}
+
+@keyframes glitch-anim2 {
+    0% {
+        clip: rect(44px, 450px, 56px, 0);
+        transform: skew(-0.5deg);
+    }
+    20% {
+        clip: rect(28px, 450px, 44px, 0);
+        transform: skew(-0.5deg);
+    }
+    40% {
+        clip: rect(10px, 450px, 80px, 0);
+        transform: skew(-0.5deg);
+    }
+    60% {
+        clip: rect(30px, 450px, 90px, 0);
+        transform: skew(-0.5deg);
+    }
+    80% {
+        clip: rect(56px, 450px, 90px, 0);
+        transform: skew(-0.5deg);
+    }
+    100% {
+        clip: rect(44px, 450px, 56px, 0);
+        transform: skew(-0.5deg);
+    }
+}
+</style>
+
+{% endblock %}

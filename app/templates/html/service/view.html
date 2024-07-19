@@ -1,0 +1,108 @@
+{% extends "html/core/base.html" %}
+
+{% block content %}
+<section class="section" style="padding: 1rem;">
+    <div class="container" style="max-width: 1000px;">
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="card" style="box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);">
+                    <div class="card-image">
+                        <figure class="image is-16by9">
+                            <img src="{{ service.image_url }}" alt="{{ service.name }}">
+                        </figure>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <p class="title is-3">{{ service.name }}</p>
+                                <p class="subtitle is-5">Provided by {{ service.provider }}</p>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <p>{{ service.description }}</p>
+                            <br>
+                            <time datetime="{{ service.date }}">Date: {{ service.date }}</time>
+                        </div>
+                    </div>
+                    <footer class="card-footer">
+                        <button class="card-footer-item button is-primary is-light" id="contactProviderBtn">Contact Provider</button>
+                        <button class="card-footer-item button is-success is-light" id="addToCartBtn">Add to Cart</button>
+                        <a href="{{ url_for('service.find') }}" class="card-footer-item button is-primary is-light">Back to Services</a>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal for Contact Provider -->
+<div class="modal" id="contactProviderModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Contact Provider</p>
+            <button class="delete" aria-label="close" id="closeModalBtn"></button>
+        </header>
+        <section class="modal-card-body">
+            <p>Would you like to contact the provider via Outlook?</p>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-success" id="redirectBtn">Yes, redirect me</button>
+            <button class="button" id="cancelBtn">Cancel</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const contactProviderBtn = document.getElementById('contactProviderBtn');
+        const contactProviderModal = document.getElementById('contactProviderModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const redirectBtn = document.getElementById('redirectBtn');
+        let selectedEmail = "{{ service.email }}"; // Replace with provider's email address
+        let selectedSubject = encodeURIComponent("Inquiry about {{ service.name }}");
+
+        contactProviderBtn.addEventListener('click', () => {
+            contactProviderModal.classList.add('is-active');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            contactProviderModal.classList.remove('is-active');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            contactProviderModal.classList.remove('is-active');
+        });
+
+        redirectBtn.addEventListener('click', () => {
+            const body = encodeURIComponent("Hello,\n\nI am interested in learning more about {{ service.name }}.\n\nBest regards,\n[Your Name]");
+            window.location.href = `mailto:${selectedEmail}?subject=${selectedSubject}&body=${body}`;
+        });
+
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        addToCartBtn.addEventListener('click', () => {
+            fetch('/service/add_to_cart/{{ service.id }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    service_id: '{{ service.id }}'
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Service added to cart!');
+                } else {
+                    console.error('Error:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
+{% endblock %}

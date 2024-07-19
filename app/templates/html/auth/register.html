@@ -1,0 +1,61 @@
+{% extends 'html/core/base.html' %}
+
+{% block content %}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #container {
+            flex: 1 1 auto;
+            overflow-y: auto;
+        }
+        .title {
+            text-align: center;
+            flex: 0 0 auto;
+        }
+    </style>
+
+    <div class="card">
+        <h1 class="title">{% block title %} {{ g.translations['Register'] }} {% endblock %}</h1>
+        <div id="container"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='descope.js') }}"></script>
+    <script>
+        // Refresh the SDK token
+        sdk.refresh();
+
+        // Get the container element
+        const container = document.getElementById('container');
+
+        // Check if the user is not authenticated
+        if (!sessionToken) {
+            // Display the Descope sign-up widget
+            container.innerHTML = '<descope-wc project-id="' + projectId + '" flow-id="sign-up"></descope-wc>';
+            const wcElement = document.getElementsByTagName('descope-wc')[0];
+
+            // Define the success event handler
+            const onSuccess = (e) => {
+                sdk.refresh();
+                window.location.href = "/";
+            };
+
+            // Define the error event handler
+            const onError = (err) => console.log(err);
+
+            // Attach event listeners to the Descope widget
+            wcElement.addEventListener('success', onSuccess);
+            wcElement.addEventListener('error', onError);
+        } else {
+            // Redirect to the profile page if the user is already authenticated
+            window.location.href = "/auth/login";
+        }
+    </script>
+{% endblock %}

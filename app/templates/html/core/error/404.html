@@ -1,0 +1,66 @@
+{% extends "html/core/base.html" %}
+
+{% block content %}
+<section class="section">
+    <div class="container has-text-centered">
+        <div class="space-container">
+            <div class="stars"></div>
+            <div class="center-content">
+                <div class="astronaut">
+                    <img src="{{ url_for('static', filename='images/astronaut.png') }}" alt="Astronaut">
+                </div>
+                <h1 class="title is-1">404</h1>
+                <h2 class="subtitle is-3">Oops! You seem lost in space.</h2>
+                <p><a href="/" class="button is-primary">Go back to Home Page</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+body {
+    background: #000;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
+}
+
+.space-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.stars {
+    width: 100%;
+    height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+    animation: moveStars 50s linear infinite;
+}
+
+@keyframes moveStars {
+    from { background-position: 0 0; }
+    to { background-position: -10000px 5000px; }
+}
+
+.center-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.astronaut img {
+    max-width: 600px; /* Adjust the size as needed */
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+</style>
+
+{% endblock %}

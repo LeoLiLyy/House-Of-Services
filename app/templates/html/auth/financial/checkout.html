@@ -1,0 +1,97 @@
+{% extends "html/core/base.html" %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <div class="card hoverable floating-card">
+                    <div class="card-content">
+                        {% for product in products %}
+                            <div class="product">
+                                <img src="{{ product.image_url }}" alt="The cover of a product" />
+                                <div class="description">
+                                    <div class="is-centered">
+                                        <h2>{{ product.name }}</h2>
+                                        <h4><b>{{ product.price }}</b></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <button id="checkout-button" class="button is-primary">Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Floating Cards */
+    .floating-card {
+        margin-top: 2em;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+    }
+
+    /* Hoverable Cards */
+    .hoverable {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hoverable:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Smooth Scroll Animation */
+    .section {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .section.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Prevent multiple scroll bars */
+    html, body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Hero Section */
+    .hero, .hero-body {
+        min-height: 100vh;
+    }
+</style>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('pk_test_51PRUTB04RXCS71J7y2wz6n0HkPUMRb7gHRXUK8M8HCq7XbJb3YjLQF8IfrtXa1ibWBOEuAB0D2ci5ue2auuNZdls00IYFoLh2M');
+    const checkoutButton = document.getElementById('checkout-button');
+
+    checkoutButton.addEventListener('click', () => {
+        fetch('/auth/fin/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sessionId) {
+                stripe.redirectToCheckout({ sessionId: data.sessionId });
+            } else {
+                console.error('Error:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+{% endblock %}

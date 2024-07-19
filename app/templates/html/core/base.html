@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="{{ session['language'] }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HOS{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="https://unpkg.com/@descope/web-component@latest/dist/index.js"></script>
+    <script src="https://unpkg.com/@descope/web-js-sdk@latest/dist/index.umd.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://teamnull1.statuspage.io/embed/script.js"></script>
+    <style>
+        /* Canvas Background */
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        #backgroundCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="backgroundCanvas"></canvas>
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="/">{{ g.translations['Home'] }}</a>
+                <a class="navbar-item" href="/auth/profile">{{ g.translations['Profile'] }}</a>
+                <a class="navbar-item" href="/auth/login">{{ g.translations['Login'] }}</a>
+                <a class="navbar-item" href="/auth/register">{{ g.translations['Register'] }}</a>
+                <a class="navbar-item" href="/service/cart">{{ g.translations['Cart'] }}</a>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <form action="{{ url_for('set_language') }}" method="POST">
+                        <div class="select">
+                            <select name="language" onchange="this.form.submit()">
+                                <option value="en_US" {% if session['language'] == 'en_US' %}selected{% endif %}>English (US)</option>
+                                <option value="es_ES" {% if session['language'] == 'es_ES' %}selected{% endif %}>Español (ES)</option>
+                                <option value="sv_SE" {% if session['language'] == 'sv_SE' %}selected{% endif %}>Svenska (SE)</option>
+                                <option value="ja_JP" {% if session['language'] == 'ja_JP' %}selected{% endif %}>日本語 (JP)</option>
+                                <option value="fr_FR" {% if session['language'] == 'fr_FR' %}selected{% endif %}>Français (FR)</option>
+                                <option value="zh_CN" {% if session['language'] == 'zh_CN' %}selected{% endif %}>中文 (中国)</option>
+                                <option value="zh_HK" {% if session['language'] == 'zh_HK' %}selected{% endif %}>中文 (香港)</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% block content %}{% endblock %}
+    <script>
+        // Canvas animation for fluid background
+        const canvas = document.getElementById('backgroundCanvas');
+        const ctx = canvas.getContext('2d');
+        const color1 = '#32cd32';
+        const color2 = '#add8e6';
+
+        async function logout() {
+            await sdk.logout()
+            window.location.href = "/login"
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function drawBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function animateBackground() {
+            drawBackground();
+            requestAnimationFrame(animateBackground);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animateBackground();
+    </script>
+</body>
+</html>

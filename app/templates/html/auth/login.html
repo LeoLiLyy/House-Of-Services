@@ -1,0 +1,52 @@
+{% extends 'html/core/base.html' %}
+
+{% block content %}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #container {
+            flex: 1 1 auto;
+            overflow-y: auto;
+        }
+        .title {
+            text-align: center;
+            flex: 0 0 auto;
+        }
+    </style>
+
+    <div class="card">
+        <h1 class="title">{% block title %} {{ g.translations['Login'] }} {% endblock %}</h1>
+        <div id="container"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='descope.js') }}"></script>
+    <script>
+        sdk.refresh()
+        const container = document.getElementById('container')
+
+        if (!sessionToken) {
+            container.innerHTML = '<descope-wc project-id="' + projectId + '" flow-id="sign-in"></descope-wc>'
+            const wcElement = document.getElementsByTagName('descope-wc')[0]
+
+            const onSuccess = (e) => {
+                sdk.refresh()
+                window.location.href = "/auth/hop"
+            }
+
+            const onError = (err) => console.log(err);
+
+            wcElement.addEventListener('success', onSuccess)
+            wcElement.addEventListener('error', onError)
+        } else {
+            window.location.href = "/auth/hop"
+        }
+    </script>
+{% endblock %}
